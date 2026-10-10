@@ -1,0 +1,1 @@
+//Setup React Context API for Authentication across entire application
