@@ -1,17 +1,18 @@
 {
-  "name": "client",
+  "name": "dopamine-binder-server",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "version": "1.0.0",
+  "type": "commonjs",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "oxlint",
-    "preview": "vite preview"
+    "dev": "node --watch server.js",
+    "start": "node server.js"
   },
   "dependencies": {
     "dotenv": "^18.0.6",
     "express": "^5.2.1",
+    "mongoose": "^9.11.1",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },
