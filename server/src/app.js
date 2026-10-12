@@ -7,6 +7,7 @@ const passport = require("passport");
 const configurePassport = require("./config/passport");
 const isAuthenticated = require("./middleware/authMiddleware");
 const logger = require("./middleware/loggerMiddleware");
+const User = require("./models/userModel");
 
 const app = express();
 
@@ -63,10 +64,16 @@ app.get(
   }
 );
 
-app.get("/profile", isAuthenticated, (req, res) => {
-  res.json({
-    user: req.user
-  });
+app.get("/profile", isAuthenticated, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-__v");
+
+    res.json({
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to load user profile" });
+  }
 });
 
 // ── Error handler (must be last) ─────────────────────────
