@@ -1,31 +1,41 @@
-require('dotenv').config();
+require("dotenv").config();
 
 const express = require("express");
+const cors = require("cors");
 const session = require("express-session");
 const passport = require("passport");
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const configurePassport = require("./config/passport");
+const isAuthenticated = require("./middleware/authMiddleware");
 
 const app = express();
 
+
+// ── App config ───────────────────────────────────────────
+app.use(cors({
+    origin: "http://localhost:5173", // Replace with your frontend URL
+    credentials: true, // Allow cookies to be sent
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
+// ── Session ──────────────────────────────────────────────
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
 }));
 
+
+// ── Passport ─────────────────────────────────────────────
 app.use(passport.initialize());
 app.use(passport.session());
 
 configurePassport();
-app.use(passport.initialize());
 
 
+// ── Routes ───────────────────────────────────────────────
 app.get("/", (req, res) => {
   res.json({ message: "Dopamine Binder is running" });
 });
@@ -41,13 +51,18 @@ app.get(
 
 app.get(
   "/auth/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login", session: false }),
+  passport.authenticate("google", {
+    failureRedirect: "http://localhost:5173/login",
+  }),
   (req, res) => {
-    res.json({
-      message: "Google authentication successful",
-      user: req.user,
-    });
+    res.redirect("http://localhost:5173");
   }
 );
+
+app.get("/profile", isAuthenticated, (req, res) => {
+  res.json({
+    user: req.user
+  });
+});
 
 module.exports = app;

@@ -1,36 +1,51 @@
-
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const User = require("../models/userModel");
+
 
 const configurePassport = () => {
   const clientID = process.env.GOOGLE_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
 
-  if (!clientID || !clientSecret || clientID === "your_google_client_id" || clientSecret === "your_google_client_secret") {
-    console.warn("Google OAuth credentials not configured yet. Passport strategy is disabled until real values are added.");
+  if (
+    !clientID ||
+    !clientSecret ||
+    clientID === "your_google_client_id" ||
+    clientSecret === "your_google_client_secret"
+  ) {
+    console.warn(
+      "Google OAuth credentials not configured yet. Passport strategy is disabled until real values are added."
+    );
     return;
   }
 
   passport.use(
   new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientID,
+      clientSecret,
       callbackURL: process.env.GOOGLE_CALLBACK_URL,
     },
     async (accessToken, refreshToken, profile, done) => {
-      return done(null, profile);
+      try {
+        let user = await User.findOne({ googleId: profile.id });
+
+        if (!user) {
+          user = await User.create({
+            googleId: profile.id,
+            name: profile.displayName,
+            email: profile.emails?.[0]?.value,
+            avatar: profile.photos?.[0]?.value,
+          });
+        }
+
+        return done(null, user);
+      } catch (error) {
+        return done(error, null);
+      }
     }
   )
 );
-
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-passport.deserializeUser((id, done) => {
-  done(null, { id });
-});
 
   passport.serializeUser((user, done) => {
     done(null, user.id || user._id || user.email);
