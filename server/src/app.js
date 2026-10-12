@@ -6,6 +6,7 @@ const session = require("express-session");
 const passport = require("passport");
 const configurePassport = require("./config/passport");
 const isAuthenticated = require("./middleware/authMiddleware");
+const logger = require("./middleware/loggerMiddleware");
 
 const app = express();
 
@@ -35,6 +36,9 @@ app.use(passport.session());
 configurePassport();
 
 
+// ── Middleware ────────────────────────────────────────────
+app.use(logger);
+
 // ── Routes ───────────────────────────────────────────────
 app.get("/", (req, res) => {
   res.json({ message: "Dopamine Binder is running" });
@@ -63,6 +67,12 @@ app.get("/profile", isAuthenticated, (req, res) => {
   res.json({
     user: req.user
   });
+});
+
+// ── Error handler (must be last) ─────────────────────────
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: err.message });
 });
 
 module.exports = app;
