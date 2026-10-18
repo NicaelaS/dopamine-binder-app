@@ -1,3 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=K2D:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lilex:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -32,7 +36,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #9ca3af;
+    --text: #010101;
     --text-h: #f3f4f6;
     --bg: #16171d;
     --border: #2e303a;
