@@ -1,17 +1,13 @@
 import './App.css';
 import { useAuth } from './context/AuthContext';
-import DashboardPage from './pages/DashboardPage';
 import WelcomePage from './pages/WelcomePage';
+import DashboardPage from './pages/DashboardPage';
 
 function App() {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return (
-      <main className="page loading-page">
-        <div className="loading-card">Loading your session...</div>
-      </main>
-    );
+    return <div>Loading...</div>;
   }
 
   return user ? <DashboardPage user={user} /> : <WelcomePage />;

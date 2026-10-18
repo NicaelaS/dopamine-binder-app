@@ -1,6 +1,6 @@
 export default function DashboardPage({ user }) {
   return (
-    <main className="page dashboard-page">
+    <main className="background-page dashboard-page">
       <div className="dashboard-card">
         <p className="eyebrow">Dashboard</p>
         <h1>Welcome back, {user?.name || 'friend'}!</h1>

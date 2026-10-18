@@ -1,0 +1,90 @@
+.welcome-page {
+  background-color: #e6e6e6;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 29px 57px 41px 35px; /* top right bottom left, pulled directly from your Figma frame */
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 404px; /* matches your Figma card width */
+  width: 100%;
+}
+
+.title {
+  font-family: 'K2D', sans-serif;
+  font-weight: 800;
+  font-size: 40px;
+  letter-spacing: -0.4px;
+  text-shadow: 0px 5px 4px rgba(0, 0, 0, 0.25);
+  margin: 0 0 24px;
+  text-align: center;
+}
+
+.tagline {
+  font-family: 'Lilex', monospace;
+  font-weight: 600;
+  font-size: 20px;
+  letter-spacing: -0.2px;
+  text-align: center;
+  margin: 0 0 48px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px; /* matches the 24px gap in your Figma "Content" frame */
+  width: 100%;
+}
+
+.copy {
+  font-family: 'Lilex', monospace;
+  font-weight: 500;
+  font-size: 16px;
+  margin: 0;
+  text-align: center;
+}
+
+.googleButton {
+  width: 100%;
+  height: 40px;
+  background-color: #eee;
+  border: none;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.googleButton:hover {
+  background-color: #e0e0e0;
+}
+
+.googleIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.legal {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: #828282;
+  text-align: center;
+  margin: 0;
+}
+
+.legalLink {
+  color: #000;
+  text-decoration: underline;
+}
