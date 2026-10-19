@@ -1,11 +1,12 @@
 .sidebar {
-  background-color: rgba(224, 224, 224, 0.41);
+  background-color: rgba(224, 224, 224, 0.38);
   width: 256px;
   height: 960px; /* matches your Figma sidebar height */
   padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 24px;
+  backdrop-filter: blur(1px);
 }
 
 .branding {

@@ -19,17 +19,9 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={user ? <Navigate to="/dashboard" replace /> : <WelcomePage />}
+          element={user ? <Navigate to="/DashboardPage" replace /> : <WelcomePage />}
         />
 
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardPage user={user} />
-            </ProtectedRoute>
-          }
-        />
         <Route
           path="/DashboardPage"
           element={
@@ -40,14 +32,6 @@ function App() {
         />
 
         <Route
-          path="/binders"
-          element={
-            <ProtectedRoute>
-              <BindersPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/BindersPage"
           element={
             <ProtectedRoute>
@@ -57,14 +41,6 @@ function App() {
         />
 
         <Route
-          path="/items"
-          element={
-            <ProtectedRoute>
-              <ItemsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/ItemsPage"
           element={
             <ProtectedRoute>
@@ -73,7 +49,7 @@ function App() {
           }
         />
 
-        <Route path="*" element={<Navigate to={user ? '/dashboard' : '/'} replace />} />
+        <Route path="*" element={<Navigate to={user ? '/DashboardPage' : '/'} replace />} />
       </Routes>
     </BrowserRouter>
   );

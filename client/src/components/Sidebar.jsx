@@ -23,11 +23,7 @@ function Sidebar({ activePath }) {
       <div className={styles.navList}>
         {navItems.map((item) => {
           const normalizedItemPath = normalizePath(item.path);
-          const isActive =
-            currentPath === normalizedItemPath ||
-            (currentPath === '/dashboardpage' && normalizedItemPath === '/dashboard') ||
-            (currentPath === '/binderspage' && normalizedItemPath === '/binders') ||
-            (currentPath === '/itemspage' && normalizedItemPath === '/items');
+          const isActive = currentPath === normalizedItemPath;
 
           return (
             <Link
