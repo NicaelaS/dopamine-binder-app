@@ -1,0 +1,60 @@
+.sidebar {
+  background-color: rgba(224, 224, 224, 0.41);
+  width: 256px;
+  height: 960px; /* matches your Figma sidebar height */
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.branding {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.appName {
+  font-family: 'K2D', sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  letter-spacing: -0.24px;
+  margin: 0;
+}
+
+.appTagline {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: #828282;
+  margin: 0;
+}
+
+.navList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #454545; /* default/inactive text color */
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+}
+
+.navItem:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* .active overrides the default styles when this is the current page */
+.active {
+  color: #000;
+  font-weight: 600;
+}
+

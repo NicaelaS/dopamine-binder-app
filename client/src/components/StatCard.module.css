@@ -1,0 +1,32 @@
+.card {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  width: 192px;
+  height: 200px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.label {
+  color: #828282;
+  font-size: 16px;
+  margin: 0;
+}
+
+.value {
+  font-family: 'K2D', sans-serif;
+  font-weight: 600;
+  font-size: 32px;
+  margin: 0;
+}
+
+.caption {
+  color: #828282;
+  font-size: 16px;
+  margin: 0;
+}

@@ -1,0 +1,64 @@
+/* shared styles across every variant: size, text, border radius */
+.button {
+  height: 29px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 5px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.1px;
+  color: #000;
+  cursor: pointer;
+  box-shadow: inset 4px -4px 4px rgba(0, 0, 0, 0.25);
+}
+
+/* each variant below is just a different gradient, pulled directly from your Figma file's colors */
+
+.newBinder {
+  background-image: linear-gradient(
+    153deg,
+    rgba(250, 121, 33, 0.8) 37%,
+    rgba(234, 53, 70, 0.8) 69%
+  );
+}
+
+.deleteBinder {
+  background-image: linear-gradient(
+    153deg,
+    rgba(234, 53, 70, 0.8) 19%,
+    rgba(250, 121, 33, 0.8) 73%
+  );
+}
+
+.editBinder {
+    background-image: linear-gradient(
+        153deg,
+        rgba(250, 121, 33, 0.8) 50%,
+        rgba(234, 53, 70, 0.8) 80%
+    );
+}
+
+.newItem {
+  background-image: linear-gradient(
+    216deg,
+    rgba(91, 192, 235, 0.8) 22%,
+    rgba(255, 191, 0, 0.8) 83%
+  );
+}
+
+.deleteItem {
+  background-image: linear-gradient(
+    216deg,
+    rgba(255, 191, 0, 0.8) 22%,
+    rgba(91, 192, 235, 0.8) 83%
+  );
+}
+
+.editItem {
+  background-image: linear-gradient(
+    216deg,
+    rgba(91, 192, 235, 0.8) 22%,
+    rgba(255, 191, 0, 0.8) 83%
+  );
+}
