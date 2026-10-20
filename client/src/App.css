@@ -1,11 +1,18 @@
 .background-page {
-  background-color: #e6e6e6;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
   min-height: 100vh;
+  background-color: #e6e6e6;
   background-image: url('./assets/Background.svg');
-  background-repeat: repeat;
-  background-position: center 32px;
-  background-size: clamp(780px, 60vw, 1400px);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
   background-attachment: local;
+}
+
+.background-page > * {
+  min-width: 0;
 }
 
 .page-shell {
@@ -27,4 +34,10 @@
 .dashboard-page,
 .binders-page {
   padding: 32px 24px;
+}
+
+@media (max-width: 980px) {
+  .background-page {
+    flex-direction: column;
+  }
 }

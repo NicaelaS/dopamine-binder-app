@@ -1,60 +1,33 @@
-.card {
+.binderCard {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: 8px;
-  border: none;
-  border-radius: 14px;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  width: 100%;
 }
 
-.card:hover {
-  transform: translateY(-1px);
+.binderImage {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.binderName {
+  font-size: clamp(0.7rem, 1vw, 0.875rem);
+  font-weight: 500;
+  text-align: center;
+  margin: 0;
+}
+
+.large {
+  width: clamp(90px, 12vw, 115px);
 }
 
 .small {
-  width: 120px;
-  height: 92px;
-  padding: 12px 10px;
+  width: clamp(62px, 8vw, 80px);
 }
 
-.folderIcon {
-  width: 44px;
-  height: 34px;
-  border-radius: 8px 8px 10px 10px;
-  position: relative;
-  display: block;
-  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.08);
-}
-
-.folderIcon::before {
-  content: '';
-  position: absolute;
-  top: -8px;
-  left: 8px;
-  width: 22px;
-  height: 12px;
-  border-radius: 8px 8px 0 0;
-  background: rgba(255, 255, 255, 0.34);
-}
-
-.orange {
-  background: linear-gradient(180deg, #f9c77a 0%, #f0a04f 100%);
-}
-
-.orange .folderIcon {
-  background: linear-gradient(180deg, #f7d181 0%, #ef9b43 100%);
-}
-
-.folderLabel {
+.small .binderName {
   font-size: 12px;
-  line-height: 1.2;
-  color: #1c1c1c;
-  font-weight: 600;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 90%;
 }

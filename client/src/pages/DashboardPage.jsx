@@ -19,7 +19,7 @@ function DashboardPage({ user }) {
 
   return (
     <div className={`background-page ${styles.page}`}>
-      <Sidebar activePath="/dashboard" />
+      <Sidebar activePath="/DashboardPage" />
 
       <main className={styles.main}>
         <div className={styles.topBar}>

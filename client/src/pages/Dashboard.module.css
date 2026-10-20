@@ -4,15 +4,16 @@
   width: 100%;
   background-color: #e6e6e6;
   background-image: url('../assets/Background.svg');
-  background-repeat: repeat;
-  background-position: center 32px;
-  background-size: clamp(780px, 60vw, 1400px);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
   background-attachment: local;
 }
 
 .main {
   flex: 1;
-  padding: 32px 40px 40px;
+  min-width: 0;
+  padding: clamp(24px, 4vw, 40px);
 }
 
 .topBar {
@@ -20,6 +21,7 @@
   align-items: center;
   gap: 20px;
   margin-bottom: 24px;
+  flex-wrap: wrap;
 }
 
 .pageTitle {
@@ -27,12 +29,13 @@
   font-size: clamp(2rem, 2vw, 2.4rem);
   font-weight: 700;
   color: #1c1c1c;
-  flex: 1;
+  flex: 1 1 180px;
 }
 
 .searchInput {
   width: min(440px, 42vw);
   min-width: 220px;
+  max-width: 100%;
   height: 44px;
   border: 1px solid #d9d9d9;
   border-radius: 12px;
@@ -40,6 +43,7 @@
   padding: 0 16px;
   font-size: 0.96rem;
   color: #3a3a3a;
+  flex: 1 1 260px;
 }
 
 .searchInput::placeholder {
@@ -59,6 +63,7 @@
   align-items: center;
   gap: 24px;
   margin-bottom: 28px;
+  flex-wrap: wrap;
 }
 
 .welcomeTitle {
@@ -77,11 +82,12 @@
 .headerButtons {
   display: flex;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .statsRow {
   display: grid;
-  grid-template-columns: 200px minmax(230px, 1fr) minmax(260px, 1fr);
+  grid-template-columns: minmax(160px, 200px) minmax(230px, 1fr) minmax(260px, 1fr);
   gap: 24px;
   align-items: stretch;
   margin-bottom: 32px;
