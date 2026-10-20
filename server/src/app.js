@@ -9,6 +9,7 @@ const isAuthenticated = require("./middleware/authMiddleware");
 const logger = require("./middleware/loggerMiddleware");
 const User = require("./models/userModel");
 const searchRoutes = require("./routes/searchRoutes");
+const binderRoutes = require("./routes/binderRoutes");
 const itemRoutes = require("./routes/itemRoutes");
 
 const app = express();
@@ -46,7 +47,7 @@ app.use(logger);
 // ── API config ───────────────────────────────────────────
 app.use("/api/search", searchRoutes);
 app.use("/api/items", itemRoutes);
-
+app.use('/api/binders', binderRoutes);
 
 // ── Routes ───────────────────────────────────────────────
 app.get("/", (req, res) => {

@@ -1,9 +1,8 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 // only populated when type === 'TCG'
 const cardDetailsSchema = new mongoose.Schema({
   // which trading card game this card belongs to
-  
   game: {
     type: String,
     enum: ['pokemon', 'onepiece', 'magic'],
@@ -14,8 +13,8 @@ const cardDetailsSchema = new mongoose.Schema({
   set: String,
   cardNumber: String,
   rarity: String,
-  referenceImageUrl: String, // the card's official/catalog image, not the user's own photo
-  marketPrice: Number,        // optional bonus field if the API returns pricing
+  referenceImageUrl: String,
+  marketPrice: Number,
 
   // --- manual, collector-entered fields (the user's specific copy) ---
   condition: {
@@ -31,7 +30,7 @@ const cardDetailsSchema = new mongoose.Schema({
     enum: ['PSA', 'BGS', 'CGC', null],
     default: null,
   },
-  grade: Number, // e.g., 9, 9.5, 10 — only meaningful when graded is true
+  grade: Number,
   variant: {
     type: String,
     enum: ['none', 'holo', 'reverse holo', 'foil', 'parallel'],
@@ -44,9 +43,9 @@ const cardDetailsSchema = new mongoose.Schema({
   edition: {
     type: String,
     enum: ['1st Edition', 'Unlimited', null],
-    default: null, // mostly relevant for Pokemon; stays null for other games
+    default: null,
   },
-}, { _id: false }); // _id: false since this is a sub-object, not its own collection
+}, { _id: false });
 
 // ---- bookDetails subdocument ----
 // only populated when type === 'BOOK'
@@ -71,7 +70,7 @@ const bookDetailsSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  printing: String, // e.g., "First printing"
+  printing: String,
 }, { _id: false });
 
 // ---- main Item schema ----
@@ -84,9 +83,9 @@ const itemSchema = new mongoose.Schema({
   },
 
   // which binder/folder this item lives in
-  folderId: {
+  binderId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Folder',
+    ref: 'Binder',
     required: true,
   },
 
@@ -106,11 +105,11 @@ const itemSchema = new mongoose.Schema({
     min: 1,
   },
   notes: {
-    type: String, // stores rich text as HTML from your notes editor
+    type: String,
     default: '',
   },
   photos: {
-    type: [String], // array of Cloudinary URLs
+    type: [String],
     validate: {
       validator: (arr) => arr.length <= 4,
       message: 'A maximum of 4 photos is allowed per item.',
@@ -126,15 +125,12 @@ const itemSchema = new mongoose.Schema({
     default: false,
   },
 
-  // only one of these two will actually be set, based on `type`
-  // the controller strips the unused one before saving
   cardDetails: cardDetailsSchema,
   bookDetails: bookDetailsSchema,
 }, {
-  timestamps: true, // adds createdAt / updatedAt automatically
-  // createdAt doubles as the data source for your "Last uploaded" dashboard stat
+  timestamps: true,
 });
 
 const Item = mongoose.model('Item', itemSchema);
 
-export default Item;
+module.exports = Item;
