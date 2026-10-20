@@ -8,6 +8,8 @@ const configurePassport = require("./config/passport");
 const isAuthenticated = require("./middleware/authMiddleware");
 const logger = require("./middleware/loggerMiddleware");
 const User = require("./models/userModel");
+const searchRoutes = require("./routes/searchRoutes");
+const itemRoutes = require("./routes/itemRoutes");
 
 const app = express();
 
@@ -39,6 +41,12 @@ configurePassport();
 
 // ── Middleware ────────────────────────────────────────────
 app.use(logger);
+
+
+// ── API config ───────────────────────────────────────────
+app.use("/api/search", searchRoutes);
+app.use("/api/items", itemRoutes);
+
 
 // ── Routes ───────────────────────────────────────────────
 app.get("/", (req, res) => {

@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 
-// ---- cardDetails subdocument ----
 // only populated when type === 'TCG'
 const cardDetailsSchema = new mongoose.Schema({
   // which trading card game this card belongs to
