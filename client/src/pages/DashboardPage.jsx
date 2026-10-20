@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import styles from './Dashboard.module.css';
 import Sidebar from '../components/Sidebar';
 import Button from '../components/Button';
@@ -5,6 +6,7 @@ import StatCard from '../components/StatCard';
 import BinderCard from '../components/BinderCard';
 
 function DashboardPage({ user }) {
+  const navigate = useNavigate();
   const totalItems = 0;
   const favoriteCount = 0;
   const pinnedCount = 0;
@@ -15,6 +17,10 @@ function DashboardPage({ user }) {
 
   const handleNewItem = () => {
     console.log('Open new item form');
+  };
+
+  const handlePinnedEmptyStateClick = () => {
+    navigate('/BindersPage');
   };
 
   return (
@@ -92,10 +98,10 @@ function DashboardPage({ user }) {
           </div>
 
           <div className={styles.pinnedEmptyState}>
-            <BinderCard folder={{ name: '', color: 'orange' }} size="small" onClick={() => {}} />
+            <BinderCard binder={{ name: '', color: 'orange' }} size="small" onClick={handlePinnedEmptyStateClick} />
             <h3 className={styles.emptyTitle}>Nothing pinned yet...</h3>
             <p className={styles.emptyText}>
-              You can pin collections from the full collections list.
+              You can pin binders from the full binders list.
             </p>
           </div>
         </div>

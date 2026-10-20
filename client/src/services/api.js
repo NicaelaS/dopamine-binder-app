@@ -16,4 +16,15 @@ export async function fetchProfile() {
   return data;
 }
 
+export async function createBinder({ name, color, parentBinderId = null }) {
+  const res = await fetch(`${BASE_URL}/api/binders`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ name, color, parentBinderId }),
+  });
+  if (!res.ok) throw new Error('Failed to create binder');
+  return res.json();
+}
+
 export { API_BASE_URL };
