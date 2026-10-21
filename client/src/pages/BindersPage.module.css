@@ -1,0 +1,160 @@
+.page {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background: #f5f5f5;
+  background-image: url('../assets/Background.svg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.main {
+  flex: 1;
+  background: transparent;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 24px 0 28px;
+  background: #e6e6e6;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #000;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.searchInput {
+  width: 240px;
+  height: 34px;
+  border: 1px solid #d8d8d8;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 0 12px;
+  font-size: 14px;
+  color: #222;
+  outline: none;
+}
+
+.searchInput::placeholder {
+  color: #8a8a8a;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #d9d9d9;
+  color: #111;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
+  flex-shrink: 0;
+}
+
+.subheading {
+  margin: 18px 28px 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #6d6d6d;
+}
+
+.contentCard {
+  margin: 20px 28px 40px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 40px;
+  min-height: 320px;
+}
+
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 420px;
+}
+
+.emptyInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+}
+
+.emptyTitle {
+  margin: 0;
+  font-family: 'K2D', 'Segoe UI', sans-serif;
+  font-size: 24px;
+  line-height: 1.25;
+  font-weight: 600;
+  color: #1d1d1d;
+}
+
+.emptyText {
+  margin: 12px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #6d6d6d;
+  max-width: 420px;
+}
+
+.decorativeBinderWrap {
+  margin-top: 28px;
+  display: flex;
+  justify-content: center;
+}
+
+.emptyActionWrap {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.emptyCaption {
+  margin: 0;
+  font-size: 12px;
+  color: #8a8a8a;
+}
+
+.gridWrapper {
+  width: 100%;
+}
+
+.binderGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+.loadingState {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 15px;
+}

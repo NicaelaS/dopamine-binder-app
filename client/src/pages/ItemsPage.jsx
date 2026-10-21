@@ -1,4 +1,5 @@
 import Sidebar from '../components/Sidebar';
+import AddItemForm from '../components/AddItemForm';
 
 export default function ItemsPage() {
   return (
@@ -10,12 +11,14 @@ export default function ItemsPage() {
           <p className="eyebrow">Items</p>
           <h1>Your items</h1>
 
-          <div className="profile-box">
+          <div className="profile-box" style={{ marginBottom: '24px' }}>
             <div>
               <p><strong>Books:</strong> 0</p>
               <p><strong>Cards:</strong> 0</p>
             </div>
           </div>
+
+          <AddItemForm binderId="" />
         </div>
       </main>
     </div>

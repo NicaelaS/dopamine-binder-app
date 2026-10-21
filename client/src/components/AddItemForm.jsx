@@ -1,5 +1,17 @@
-import { useState } from "react";
-import { API_BASE_URL } from "../services/api";
+import { useEffect, useState } from "react";
+import { API_BASE_URL, createBinder, fetchBinders } from "../services/api";
+
+const binderColorOptions = [
+  { value: "white", label: "White" },
+  { value: "pink", label: "Pink" },
+  { value: "purple", label: "Purple" },
+  { value: "yellow", label: "Yellow" },
+  { value: "blue", label: "Blue" },
+  { value: "red", label: "Red" },
+  { value: "black", label: "Black" },
+  { value: "green", label: "Green" },
+  { value: "orange", label: "Orange" },
+];
 
 const initialForm = {
   title: "",
@@ -9,7 +21,7 @@ const initialForm = {
   tags: "",
   photos: [],
   favorite: false,
-  folderId: "",
+  binderId: "",
   cardDetails: {
     game: "pokemon",
     set: "",
@@ -38,14 +50,43 @@ const initialForm = {
   },
 };
 
-function AddItemForm({ folderId }) {
+function AddItemForm({ binderId: propBinderId, folderId }) {
+  const resolvedBinderId = propBinderId ?? folderId ?? "";
+
   const [form, setForm] = useState({
     ...initialForm,
-    folderId,
+    binderId: resolvedBinderId,
   });
 
+  const [binders, setBinders] = useState([]);
+  const [loadingBinders, setLoadingBinders] = useState(false);
+  const [creatingBinder, setCreatingBinder] = useState(false);
+  const [newBinderName, setNewBinderName] = useState("");
+  const [newBinderColor, setNewBinderColor] = useState("blue");
   const [searching, setSearching] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  useEffect(() => {
+    const loadBinders = async () => {
+      setLoadingBinders(true);
+      try {
+        const data = await fetchBinders();
+        setBinders(data);
+
+        if (!resolvedBinderId && data.length > 0) {
+          setForm((prev) => ({ ...prev, binderId: data[0]._id }));
+        }
+      } catch (err) {
+        console.error("Failed to load binders:", err);
+      } finally {
+        setLoadingBinders(false);
+      }
+    };
+
+    loadBinders();
+  }, [resolvedBinderId]);
 
   const setValue = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -63,6 +104,34 @@ function AddItemForm({ folderId }) {
 
   const handleTypeChange = (nextType) => {
     setForm((prev) => ({ ...prev, type: nextType }));
+  };
+
+  const handleCreateBinder = async () => {
+    if (!newBinderName.trim()) {
+      setError("Enter a binder name.");
+      return;
+    }
+
+    setCreatingBinder(true);
+    setError("");
+
+    try {
+      const newBinder = await createBinder({
+        name: newBinderName.trim(),
+        color: newBinderColor,
+      });
+
+      setBinders((prev) => [newBinder, ...prev]);
+      setForm((prev) => ({ ...prev, binderId: newBinder._id }));
+      setNewBinderName("");
+      setNewBinderColor("blue");
+      setSuccessMessage(`Binder "${newBinder.name}" created.`);
+    } catch (err) {
+      setError(err.message || "Failed to create binder.");
+      setSuccessMessage("");
+    } finally {
+      setCreatingBinder(false);
+    }
   };
 
   const handleSearch = async () => {
@@ -124,39 +193,69 @@ function AddItemForm({ folderId }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const payload = {
-      ...form,
-      folderId: form.folderId || folderId,
-      tags: form.tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter(Boolean),
-      quantity: Number(form.quantity || 1),
-      notes: form.notes || "",
-      photos: Array.isArray(form.photos) ? form.photos : [],
-      favorite: Boolean(form.favorite),
-    };
+    const selectedBinderId = form.binderId || resolvedBinderId;
 
-    if (form.type === "TCG") {
-      delete payload.bookDetails;
-    } else {
-      delete payload.cardDetails;
+    if (!selectedBinderId) {
+      setError("Select or create a binder before creating an item.");
+      setSuccessMessage("");
+      return;
     }
 
-    const response = await fetch(`${API_BASE_URL}/api/items`, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to create item.");
+    if (!form.title.trim()) {
+      setError("Title is required.");
+      setSuccessMessage("");
+      return;
     }
 
-    return data;
+    setIsSubmitting(true);
+    setError("");
+    setSuccessMessage("");
+
+    try {
+      const payload = {
+        ...form,
+        binderId: selectedBinderId,
+        tags: form.tags
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter(Boolean),
+        quantity: Number(form.quantity || 1),
+        notes: form.notes || "",
+        photos: Array.isArray(form.photos) ? form.photos : [],
+        favorite: Boolean(form.favorite),
+      };
+
+      if (form.type === "TCG") {
+        delete payload.bookDetails;
+      } else {
+        delete payload.cardDetails;
+      }
+
+      const response = await fetch(`${API_BASE_URL}/api/items`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to create item.");
+      }
+
+      setSuccessMessage(`${payload.title} saved successfully.`);
+      setForm((prev) => ({
+        ...initialForm,
+        type: prev.type,
+        binderId: selectedBinderId,
+      }));
+    } catch (err) {
+      setError(err.message || "Failed to create item.");
+      setSuccessMessage("");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -181,6 +280,95 @@ function AddItemForm({ folderId }) {
         </label>
       </div>
 
+      <div
+        style={{
+          marginBottom: "20px",
+          padding: "16px",
+          backgroundColor: "#f5f5f5",
+          borderRadius: "8px",
+        }}
+      >
+        <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>
+          Select Binder
+        </label>
+
+        {loadingBinders ? (
+          <p>Loading binders...</p>
+        ) : binders.length > 0 ? (
+          <select
+            value={form.binderId || ""}
+            onChange={(e) => setValue("binderId", e.target.value)}
+            style={{ width: "100%", padding: "8px", marginBottom: "12px" }}
+          >
+            <option value="">-- Choose a binder --</option>
+            {binders.map((binder) => (
+              <option key={binder._id} value={binder._id}>
+                {binder.name}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <p style={{ color: "#666" }}>No binders yet. Create one below.</p>
+        )}
+
+        <div
+          style={{
+            marginTop: "12px",
+            paddingTop: "12px",
+            borderTop: "1px solid #ddd",
+          }}
+        >
+          <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>
+            Or create a new binder
+          </label>
+
+          <input
+            type="text"
+            placeholder="Binder name"
+            value={newBinderName}
+            onChange={(e) => setNewBinderName(e.target.value)}
+            style={{ width: "100%", padding: "8px", marginBottom: "8px" }}
+            disabled={creatingBinder}
+          />
+
+          <select
+            value={newBinderColor}
+            onChange={(e) => setNewBinderColor(e.target.value)}
+            style={{ width: "100%", padding: "8px", marginBottom: "8px" }}
+            disabled={creatingBinder}
+          >
+            {binderColorOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+
+          <button
+            type="button"
+            onClick={handleCreateBinder}
+            disabled={creatingBinder || !newBinderName.trim()}
+            style={{
+              width: "100%",
+              padding: "8px",
+              backgroundColor: "#0969da",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: creatingBinder || !newBinderName.trim() ? "not-allowed" : "pointer",
+            }}
+          >
+            {creatingBinder ? "Creating..." : "Create Binder"}
+          </button>
+        </div>
+      </div>
+
+      {!form.binderId && (
+        <p style={{ color: "#b42318", marginBottom: "12px" }}>
+          Select or create a binder before creating an item.
+        </p>
+      )}
+
       <div>
         <label>Title</label>
         <input
@@ -193,7 +381,8 @@ function AddItemForm({ folderId }) {
         {searching ? "Searching..." : "Search"}
       </button>
 
-      {error && <p>{error}</p>}
+      {error && <p style={{ color: "#b42318" }}>{error}</p>}
+      {successMessage && <p style={{ color: "#067647" }}>{successMessage}</p>}
 
       <div>
         <label>Quantity</label>
@@ -402,7 +591,9 @@ function AddItemForm({ folderId }) {
         </div>
       )}
 
-      <button type="submit">Save Item</button>
+      <button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? "Saving..." : "Save Item"}
+      </button>
     </form>
   );
 }

@@ -13,7 +13,7 @@
   box-shadow: inset 4px -4px 4px rgba(0, 0, 0, 0.25);
 }
 
-/* each variant below is just a different gradient, pulled directly from your Figma file's colors */
+/* button variants: background color, text color, box shadow */
 
 .newBinder {
   background-image: linear-gradient(
@@ -32,11 +32,9 @@
 }
 
 .editBinder {
-    background-image: linear-gradient(
-        153deg,
-        rgba(250, 121, 33, 0.8) 50%,
-        rgba(234, 53, 70, 0.8) 80%
-    );
+  background: #f7f7f7;
+  color: #000;
+  box-shadow: inset 4px -4px 4px rgba(0, 0, 0, 0.12);
 }
 
 .newItem {

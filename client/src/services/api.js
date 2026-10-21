@@ -1,4 +1,5 @@
 const API_BASE_URL = 'http://localhost:3000';
+const BASE_URL = API_BASE_URL;
 
 export async function fetchProfile() {
   const response = await fetch(`${API_BASE_URL}/profile`, {
@@ -16,6 +17,25 @@ export async function fetchProfile() {
   return data;
 }
 
+export async function getBinders() {
+  const res = await fetch(`${BASE_URL}/api/binders`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || errorData.error || 'Failed to fetch binders');
+  }
+
+  const data = await res.json();
+  return Array.isArray(data) ? data : data.binders || [];
+}
+
+// Backward-compatible alias for existing call sites.
+export const fetchBinders = getBinders;
+
 export async function createBinder({ name, color, parentBinderId = null }) {
   const res = await fetch(`${BASE_URL}/api/binders`, {
     method: 'POST',
@@ -23,8 +43,28 @@ export async function createBinder({ name, color, parentBinderId = null }) {
     credentials: 'include',
     body: JSON.stringify({ name, color, parentBinderId }),
   });
-  if (!res.ok) throw new Error('Failed to create binder');
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || errorData.error || 'Failed to create binder');
+  }
+
   return res.json();
 }
 
-export { API_BASE_URL };
+export async function deleteBinder(binderId) {
+  const res = await fetch(`${BASE_URL}/api/binders/${binderId}`, {
+    method: 'DELETE',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || errorData.error || 'Failed to delete binder');
+  }
+
+  return res.json();
+}
+
+export { API_BASE_URL, BASE_URL };
