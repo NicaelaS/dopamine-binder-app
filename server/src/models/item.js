@@ -86,7 +86,7 @@ const itemSchema = new mongoose.Schema({
   binderId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Binder',
-    required: true,
+    required: false,
   },
 
   // root fields — persistent across both item types

@@ -3,9 +3,10 @@ const Item = require("../models/item");
 function normalizeItemPayload(payload = {}, userIdFromRequest) {
   const userId = userIdFromRequest || payload.userId;
   const type = payload.type;
+  const binderId = payload.binderId ?? payload.folderId;
 
   if (!userId) throw new Error("Authentication required.");
-  if (!payload.folderId) throw new Error("folderId is required.");
+  if (!binderId) throw new Error("binderId is required.");
   if (!payload.title || !String(payload.title).trim()) {
     throw new Error("title is required.");
   }
@@ -15,7 +16,7 @@ function normalizeItemPayload(payload = {}, userIdFromRequest) {
 
   const base = {
     userId,
-    folderId: payload.folderId,
+    binderId,
     title: String(payload.title).trim(),
     type,
     quantity: Number(payload.quantity || 1),
