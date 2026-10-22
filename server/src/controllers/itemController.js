@@ -1,5 +1,15 @@
 const Item = require("../models/item");
 
+async function getItems(req, res) {
+  try {
+    const items = await Item.find({ userId: req.user?._id }).sort({ createdAt: -1 });
+    return res.json(items);
+  } catch (error) {
+    console.error('getItems error:', error);
+    return res.status(500).json({ message: 'Failed to fetch items.' });
+  }
+}
+
 function normalizeItemPayload(payload = {}, userIdFromRequest) {
   const userId = userIdFromRequest || payload.userId;
   const type = payload.type;
@@ -90,4 +100,62 @@ async function createItem(req, res) {
   }
 }
 
-module.exports = { createItem };
+async function updateItem(req, res) {
+  try {
+    const { id } = req.params;
+    const payload = normalizeItemPayload(req.body, req.user?._id);
+
+    const updatedItem = await Item.findOneAndUpdate(
+      { _id: id, userId: req.user?._id },
+      payload,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedItem) {
+      return res.status(404).json({ message: 'Item not found.' });
+    }
+
+    return res.json({
+      message: 'Item updated successfully',
+      item: updatedItem,
+    });
+  } catch (error) {
+    console.error('updateItem error:', error);
+
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({
+        message: 'Validation failed',
+        errors: error.errors,
+      });
+    }
+
+    return res.status(400).json({
+      message: error.message || 'Failed to update item.',
+    });
+  }
+}
+
+async function deleteItem(req, res) {
+  try {
+    const { id } = req.params;
+
+    const deletedItem = await Item.findOneAndDelete({
+      _id: id,
+      userId: req.user?._id,
+    });
+
+    if (!deletedItem) {
+      return res.status(404).json({ message: 'Item not found.' });
+    }
+
+    return res.json({ message: 'Item deleted successfully' });
+  } catch (error) {
+    console.error('deleteItem error:', error);
+
+    return res.status(500).json({
+      message: error.message || 'Failed to delete item.',
+    });
+  }
+}
+
+module.exports = { getItems, createItem, updateItem, deleteItem };
