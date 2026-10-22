@@ -28,7 +28,7 @@ function CreateBinderModal({ onClose, onCreated }) {
       onCreated(newBinder);
       onClose();
     } catch (err) {
-      setError('Something went wrong creating your binder. Try again.');
+      setError(err.message || 'Something went wrong creating your binder. Try again.');
     } finally {
       setIsSaving(false);
     }

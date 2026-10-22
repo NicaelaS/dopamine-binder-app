@@ -44,7 +44,7 @@ function BindersPage() {
   }, [binders, searchTerm]);
 
   const handleNewItem = () => {
-    navigate('/items/new');
+    navigate('/ItemsPage');
   };
 
   const handleCreateSuccess = (newBinder) => {
@@ -59,7 +59,7 @@ function BindersPage() {
   const renderEmptyState = () => (
     <div className={styles.emptyState}>
       <div className={styles.emptyInner}>
-        <h2 className={styles.emptyTitle}>No collections yet</h2>
+        <h2 className={styles.emptyTitle}>No binders yet</h2>
         <p className={styles.emptyText}>
           Start building your collection by creating your first binder.
         </p>
@@ -143,9 +143,8 @@ function BindersPage() {
 
       {isCreateModalOpen && (
         <CreateBinderModal
-          isOpen={isCreateModalOpen}
           onClose={() => setIsCreateModalOpen(false)}
-          onCreateSuccess={handleCreateSuccess}
+          onCreated={handleCreateSuccess}
         />
       )}
     </div>

@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 const BASE_URL = API_BASE_URL;
 
 export async function fetchProfile() {
@@ -47,6 +47,22 @@ export async function createBinder({ name, color, parentBinderId = null }) {
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}));
     throw new Error(errorData.message || errorData.error || 'Failed to create binder');
+  }
+
+  return res.json();
+}
+
+export async function editBinder(binderId, { name, color }) {
+  const res = await fetch(`${BASE_URL}/api/binders/${binderId}`, {
+    method: 'PUT',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, color }),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || errorData.error || 'Failed to edit binder');
   }
 
   return res.json();
