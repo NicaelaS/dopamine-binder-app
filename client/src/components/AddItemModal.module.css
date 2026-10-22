@@ -1,0 +1,165 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 120;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  width: min(760px, 92vw);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.title {
+  font-family: 'K2D', sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+  margin: 0 0 16px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 12px;
+  align-items: start;
+  margin-bottom: 14px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #303030;
+  padding-top: 10px;
+}
+
+.value {
+  min-width: 0;
+}
+
+.inlineLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 16px;
+  font-size: 14px;
+}
+
+.input {
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0 12px;
+  font-size: 15px;
+  box-sizing: border-box;
+  background: #fff;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 96px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 15px;
+  box-sizing: border-box;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.swatchGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 10px;
+}
+
+.swatch {
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 6px;
+  background: none;
+  cursor: pointer;
+  text-align: center;
+}
+
+.swatchSelected {
+  border-color: #000;
+}
+
+.swatchImage {
+  width: 100%;
+  display: block;
+  border-radius: 6px;
+}
+
+.swatchLabel {
+  margin-top: 4px;
+  display: block;
+  font-size: 12px;
+  color: #444;
+}
+
+.noBinders {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.muted {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.linkButton {
+  border: 1px solid #dcdcdc;
+  background: #fff;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.error {
+  color: #ea3546;
+  font-size: 13px;
+  margin: 8px 0 0;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.cancelButton,
+.saveButton {
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.cancelButton {
+  background: none;
+  border: 1px solid #e0e0e0;
+}
+
+.saveButton {
+  background: #000;
+  color: #fff;
+  border: none;
+}
+
+.saveButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

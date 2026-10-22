@@ -33,6 +33,69 @@ export async function getBinders() {
   return Array.isArray(data) ? data : data.binders || [];
 }
 
+export async function getItems() {
+  const res = await fetch(`${BASE_URL}/api/items`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || errorData.error || 'Failed to fetch items');
+  }
+
+  const data = await res.json();
+  return Array.isArray(data) ? data : data.items || [];
+}
+
+export async function createItem(payload) {
+  const res = await fetch(`${BASE_URL}/api/items`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || errorData.error || 'Failed to create item');
+  }
+
+  return res.json();
+}
+
+export async function updateItem(itemId, payload) {
+  const res = await fetch(`${BASE_URL}/api/items/${itemId}`, {
+    method: 'PUT',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || errorData.error || 'Failed to update item');
+  }
+
+  return res.json();
+}
+
+export async function deleteItem(itemId) {
+  const res = await fetch(`${BASE_URL}/api/items/${itemId}`, {
+    method: 'DELETE',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || errorData.error || 'Failed to delete item');
+  }
+
+  return res.json();
+}
+
 // Backward-compatible alias for existing call sites.
 export const fetchBinders = getBinders;
 

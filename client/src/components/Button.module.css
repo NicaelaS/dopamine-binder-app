@@ -54,9 +54,7 @@
 }
 
 .editItem {
-  background-image: linear-gradient(
-    216deg,
-    rgba(91, 192, 235, 0.8) 22%,
-    rgba(255, 191, 0, 0.8) 83%
-  );
+  background: #f7f7f7;
+  color: #000;
+  box-shadow: inset 4px -4px 4px rgba(0, 0, 0, 0.12);
 }

@@ -16,16 +16,16 @@ function DashboardPage({ user }) {
   };
 
   const handleNewItem = () => {
-    console.log('Open new item form');
+    navigate('/items', { state: { openAddItem: true } });
   };
 
   const handlePinnedEmptyStateClick = () => {
-    navigate('/BindersPage');
+    navigate('/binders');
   };
 
   return (
     <div className={`background-page ${styles.page}`}>
-      <Sidebar activePath="/DashboardPage" />
+      <Sidebar activePath="/dashboard" />
 
       <main className={styles.main}>
         <div className={styles.topBar}>

@@ -44,7 +44,7 @@ function BindersPage() {
   }, [binders, searchTerm]);
 
   const handleNewItem = () => {
-    navigate('/ItemsPage');
+    navigate('/items', { state: { openAddItem: true } });
   };
 
   const handleCreateSuccess = (newBinder) => {
@@ -99,7 +99,7 @@ function BindersPage() {
 
   return (
     <div className={styles.page}>
-      <Sidebar activePath="/BindersPage" />
+      <Sidebar activePath="/binders" />
 
       <main className={styles.main}>
         <header className={styles.header}>

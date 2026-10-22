@@ -1,0 +1,92 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 120;
+}
+
+.modal {
+  width: min(520px, 92vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 12px;
+  background: #fff;
+  padding: 24px;
+}
+
+.title {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.2;
+  font-family: 'K2D', sans-serif;
+}
+
+.subtitle {
+  margin: 6px 0 18px;
+  color: #666;
+  font-size: 14px;
+}
+
+.infoRow {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 10px;
+  align-items: start;
+  margin-bottom: 10px;
+}
+
+.infoLabel {
+  color: #444;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.infoValue {
+  color: #121212;
+  font-size: 15px;
+  word-break: break-word;
+}
+
+.error {
+  color: #ea3546;
+  margin: 12px 0 0;
+  font-size: 13px;
+}
+
+.actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.editButton,
+.deleteButton,
+.closeButton {
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fff;
+  height: 36px;
+  padding: 0 14px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.deleteButton {
+  border-color: #ea3546;
+  color: #ea3546;
+}
+
+.deleteButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.closeButton {
+  background: #121212;
+  color: #fff;
+  border: none;
+}

@@ -2,9 +2,9 @@ import { Link, useLocation } from 'react-router-dom';
 import styles from './Sidebar.module.css';
 
 const navItems = [
-  { label: 'Dashboard', path: '/DashboardPage' },
-  { label: 'All Binders', path: '/BindersPage' },
-  { label: 'All Items', path: '/ItemsPage' },
+  { label: 'Dashboard', path: '/dashboard' },
+  { label: 'All Binders', path: '/binders' },
+  { label: 'All Items', path: '/items' },
 ];
 
 const normalizePath = (path = '') => path.toLowerCase();
