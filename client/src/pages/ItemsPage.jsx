@@ -23,13 +23,30 @@ function ItemsPage() {
   const loadData = async () => {
     try {
       setLoading(true);
-      const [itemsData, bindersData] = await Promise.all([getItems(), getBinders()]);
-      setItems(Array.isArray(itemsData) ? itemsData : []);
-      setBinders(Array.isArray(bindersData) ? bindersData : []);
-    } catch (error) {
-      console.error('Failed to fetch items or binders:', error);
-      setItems([]);
-      setBinders([]);
+
+      const [itemsResult, bindersResult] = await Promise.allSettled([
+        getItems(),
+        getBinders(),
+      ]);
+
+      if (itemsResult.status === 'rejected') {
+        console.error('Failed to fetch items:', itemsResult.reason);
+      }
+
+      if (bindersResult.status === 'rejected') {
+        console.error('Failed to fetch binders:', bindersResult.reason);
+      }
+
+      setItems(
+        itemsResult.status === 'fulfilled' && Array.isArray(itemsResult.value)
+          ? itemsResult.value
+          : []
+      );
+      setBinders(
+        bindersResult.status === 'fulfilled' && Array.isArray(bindersResult.value)
+          ? bindersResult.value
+          : []
+      );
     } finally {
       setLoading(false);
     }
@@ -198,6 +215,7 @@ function ItemsPage() {
         binders={binders}
         onClose={() => setIsAddModalOpen(false)}
         onSaved={loadData}
+        onBinderCreated={loadData}
       />
 
       <ItemDetailModal

@@ -80,6 +80,12 @@
   gap: 10px;
 }
 
+.noBindersWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .swatch {
   border: 2px solid transparent;
   border-radius: 8px;
@@ -87,6 +93,24 @@
   background: none;
   cursor: pointer;
   text-align: center;
+}
+
+.swatchNew {
+  border: 1px dashed #d0d0d0;
+  background: transparent;
+  min-height: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #303030;
+}
+
+.swatchPlus {
+  font-size: 32px;
+  line-height: 1;
+  font-weight: 500;
 }
 
 .swatchSelected {
