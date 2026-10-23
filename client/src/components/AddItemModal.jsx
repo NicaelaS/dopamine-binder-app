@@ -37,7 +37,16 @@ const initialForm = {
   },
 };
 
-function AddItemModal({ isOpen, mode, initialItem, binders, onClose, onSaved, onBinderCreated }) {
+function AddItemModal({
+  isOpen,
+  mode,
+  initialItem,
+  binders,
+  defaultBinderId = null,
+  onClose,
+  onSaved,
+  onBinderCreated,
+}) {
   const [form, setForm] = useState(initialForm);
   const [error, setError] = useState('');
   const [isSaving, setIsSaving] = useState(false);
@@ -73,27 +82,33 @@ function AddItemModal({ isOpen, mode, initialItem, binders, onClose, onSaved, on
         },
       });
     } else {
+      const nextBinderId = defaultBinderId ? String(defaultBinderId) : '';
+
       setForm({
         ...initialForm,
-        binderId: '',
+        binderId: nextBinderId,
       });
     }
 
     setError('');
-  }, [isOpen, mode, initialItem]);
+  }, [isOpen, mode, initialItem, defaultBinderId]);
 
   useEffect(() => {
     if (!isOpen || mode !== 'add' || form.binderId) return;
 
-    const firstBinderId = binders?.[0]?._id ? String(binders[0]._id) : '';
+    const preferredBinderId = defaultBinderId
+      ? String(defaultBinderId)
+      : binders?.[0]?._id
+        ? String(binders[0]._id)
+        : '';
 
-    if (!firstBinderId) return;
+    if (!preferredBinderId) return;
 
     setForm((prev) => ({
       ...prev,
-      binderId: firstBinderId,
+      binderId: preferredBinderId,
     }));
-  }, [isOpen, mode, form.binderId, binders]);
+  }, [isOpen, mode, form.binderId, binders, defaultBinderId]);
 
   if (!isOpen) return null;
 

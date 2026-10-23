@@ -4,6 +4,7 @@ import { useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardPage from './pages/DashboardPage';
 import BindersPage from './pages/BindersPage';
+import BinderDetailPage from './pages/BinderDetailPage';
 import ItemsPage from './pages/ItemsPage';
 import WelcomePage from './pages/WelcomePage';
 
@@ -38,6 +39,15 @@ function App() {
           element={
             <ProtectedRoute>
               <BindersPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/binders/:binderId"
+          element={
+            <ProtectedRoute>
+              <BinderDetailPage />
             </ProtectedRoute>
           }
         />

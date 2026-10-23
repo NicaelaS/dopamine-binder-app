@@ -1,15 +1,60 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Dashboard.module.css';
 import Sidebar from '../components/Sidebar';
 import Button from '../components/Button';
 import StatCard from '../components/StatCard';
 import BinderCard from '../components/BinderCard';
+import { getBinders, getItems } from '../services/api';
 
 function DashboardPage({ user }) {
   const navigate = useNavigate();
-  const totalItems = 0;
+  const [items, setItems] = useState([]);
+  const [binders, setBinders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [itemsRequestFailed, setItemsRequestFailed] = useState(false);
   const favoriteCount = 0;
   const pinnedCount = 0;
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      setItemsRequestFailed(false);
+
+      const [itemsResult, bindersResult] = await Promise.allSettled([
+        getItems(),
+        getBinders(),
+      ]);
+
+      if (itemsResult.status === 'rejected') {
+        console.error('Failed to fetch items:', itemsResult.reason);
+        setItemsRequestFailed(true);
+      }
+
+      if (bindersResult.status === 'rejected') {
+        console.error('Failed to fetch binders:', bindersResult.reason);
+      }
+
+      setItems(
+        itemsResult.status === 'fulfilled' && Array.isArray(itemsResult.value)
+          ? itemsResult.value
+          : []
+      );
+      setBinders(
+        bindersResult.status === 'fulfilled' && Array.isArray(bindersResult.value)
+          ? bindersResult.value
+          : []
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const totalItemsValue = loading ? '...' : itemsRequestFailed ? '-' : items.length;
 
   const handleNewBinder = () => {
     console.log('Open new binder form');
@@ -59,7 +104,7 @@ function DashboardPage({ user }) {
         </div>
 
         <div className={styles.statsRow}>
-          <StatCard label="Total items" value={totalItems} caption="No items added yet" />
+          <StatCard label="Total items" value={totalItemsValue} caption="No items added yet" />
 
           <div className={styles.favoritesCard}>
             <div className={styles.favoritesHeader}>

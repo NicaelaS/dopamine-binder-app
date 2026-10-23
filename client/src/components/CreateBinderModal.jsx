@@ -1,16 +1,32 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './CreateBinderModal.module.css';
 import { binderImages, binderColors } from '../assets/binderImages';
-import { createBinder } from '../services/api';
+import { createBinder, editBinder } from '../services/api';
 
 // onClose: called to dismiss the modal without saving
 // onCreated: called after a successful save, with the new binder, so the
 // parent page (e.g. BindersPage) can add it to its list without a full refetch
-function CreateBinderModal({ onClose, onCreated }) {
+function CreateBinderModal({ onClose, onCreated, mode = 'create', initialBinder = null, isOpen = true }) {
   const [name, setName] = useState('');
   const [selectedColor, setSelectedColor] = useState('orange'); // sensible default
   const [error, setError] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    if (mode === 'edit' && initialBinder) {
+      setName(initialBinder.name || '');
+      setSelectedColor(initialBinder.color || 'orange');
+    } else {
+      setName('');
+      setSelectedColor('orange');
+    }
+
+    setError('');
+  }, [isOpen, mode, initialBinder]);
+
+  if (!isOpen) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // stop the browser's default full-page form submit
@@ -24,11 +40,20 @@ function CreateBinderModal({ onClose, onCreated }) {
     setError('');
 
     try {
-      const newBinder = await createBinder({ name: name.trim(), color: selectedColor });
-      onCreated(newBinder);
+      if (mode === 'edit' && initialBinder?._id) {
+        const updatedBinder = await editBinder(initialBinder._id, {
+          name: name.trim(),
+          color: selectedColor,
+        });
+        onCreated?.(updatedBinder);
+      } else {
+        const newBinder = await createBinder({ name: name.trim(), color: selectedColor });
+        onCreated?.(newBinder);
+      }
+
       onClose();
     } catch (err) {
-      setError(err.message || 'Something went wrong creating your binder. Try again.');
+      setError(err.message || 'Something went wrong saving your binder. Try again.');
     } finally {
       setIsSaving(false);
     }
@@ -38,7 +63,7 @@ function CreateBinderModal({ onClose, onCreated }) {
     // clicking the dark overlay closes the modal; clicking inside the card does not
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <h2 className={styles.title}>New binder</h2>
+        <h2 className={styles.title}>{mode === 'edit' ? 'Edit binder' : 'New binder'}</h2>
 
         <form onSubmit={handleSubmit}>
           <label className={styles.label} htmlFor="binderName">Name</label>
@@ -72,7 +97,7 @@ function CreateBinderModal({ onClose, onCreated }) {
               Cancel
             </button>
             <button type="submit" disabled={isSaving} className={styles.createButton}>
-              {isSaving ? 'Creating...' : 'Create binder'}
+              {isSaving ? (mode === 'edit' ? 'Saving...' : 'Creating...') : mode === 'edit' ? 'Save changes' : 'Create binder'}
             </button>
           </div>
         </form>
