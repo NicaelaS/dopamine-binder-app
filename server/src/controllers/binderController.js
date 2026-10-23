@@ -42,6 +42,7 @@ async function createBinder(req, res) {
 async function deleteBinder(req, res) {
   try {
     const { binderId } = req.params;
+
     const binder = await Binder.findOneAndDelete({
       _id: binderId,
       userId: req.user._id,
