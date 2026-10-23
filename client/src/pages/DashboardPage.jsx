@@ -5,6 +5,7 @@ import Sidebar from '../components/Sidebar';
 import Button from '../components/Button';
 import StatCard from '../components/StatCard';
 import BinderCard from '../components/BinderCard';
+import CreateBinderModal from '../components/CreateBinderModal';
 import { getBinders, getItems } from '../services/api';
 
 const binderColorMap = {
@@ -25,6 +26,7 @@ function DashboardPage({ user }) {
   const [binders, setBinders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [itemsRequestFailed, setItemsRequestFailed] = useState(false);
+  const [isCreateBinderOpen, setIsCreateBinderOpen] = useState(false);
   const favoriteCount = 0;
   const pinnedCount = 0;
 
@@ -124,7 +126,12 @@ function DashboardPage({ user }) {
     : '';
 
   const handleNewBinder = () => {
-    console.log('Open new binder form');
+    setIsCreateBinderOpen(true);
+  };
+
+  const handleBinderCreated = async () => {
+    setIsCreateBinderOpen(false);
+    await loadData();
   };
 
   const handleNewItem = () => {
@@ -140,6 +147,13 @@ function DashboardPage({ user }) {
       <Sidebar activePath="/dashboard" />
 
       <main className={styles.main}>
+        <CreateBinderModal
+          isOpen={isCreateBinderOpen}
+          mode="create"
+          onClose={() => setIsCreateBinderOpen(false)}
+          onCreated={handleBinderCreated}
+        />
+
         <div className={styles.topBar}>
           <h1 className={styles.pageTitle}>Dashboard</h1>
 
