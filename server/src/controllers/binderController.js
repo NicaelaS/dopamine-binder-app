@@ -24,9 +24,23 @@ async function createBinder(req, res) {
       return res.status(400).json({ error: 'Name and color are required.' });
     }
 
+    const trimmedName = String(name).trim();
+
+    // Prevent duplicate binder names per user, case-insensitive exact match.
+    const existingBinder = await Binder.findOne({
+      userId: req.user._id,
+      name: trimmedName,
+    }).collation({ locale: 'en', strength: 2 });
+
+    if (existingBinder) {
+      return res.status(409).json({
+        message: 'You already have a binder with this name.',
+      });
+    }
+
     const binder = await Binder.create({
       userId: req.user._id,
-      name,
+      name: trimmedName,
       color,
       parentBinderId: parentBinderId || null,
     });
@@ -69,9 +83,24 @@ async function editBinder(req, res) {
       return res.status(400).json({ error: 'Name and color are required.' });
     }
 
+    const trimmedName = String(name).trim();
+
+    // Prevent duplicate binder names per user, case-insensitive exact match.
+    const existingBinder = await Binder.findOne({
+      userId: req.user._id,
+      _id: { $ne: binderId },
+      name: trimmedName,
+    }).collation({ locale: 'en', strength: 2 });
+
+    if (existingBinder) {
+      return res.status(409).json({
+        message: 'You already have a binder with this name.',
+      });
+    }
+
     const binder = await Binder.findOneAndUpdate(
       { _id: binderId, userId: req.user._id },
-      { name, color },
+      { name: trimmedName, color },
       { new: true }
     );
 
