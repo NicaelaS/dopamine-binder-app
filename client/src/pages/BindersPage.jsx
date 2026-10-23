@@ -4,6 +4,7 @@ import Sidebar from '../components/Sidebar';
 import Button from '../components/Button';
 import BinderCard from '../components/BinderCard';
 import CreateBinderModal from '../components/CreateBinderModal';
+import Avatar from '../components/Avatar';
 import { getBinders } from '../services/api';
 import styles from './BindersPage.module.css';
 
@@ -122,7 +123,7 @@ function BindersPage() {
               New Binder
             </Button>
 
-            <div className={styles.avatar}>JD</div>
+            <Avatar />
           </div>
         </header>
 

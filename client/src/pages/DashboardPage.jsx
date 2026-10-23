@@ -6,6 +6,7 @@ import Button from '../components/Button';
 import StatCard from '../components/StatCard';
 import BinderCard from '../components/BinderCard';
 import CreateBinderModal from '../components/CreateBinderModal';
+import Avatar from '../components/Avatar';
 import { getBinders, getItems } from '../services/api';
 
 const binderColorMap = {
@@ -163,7 +164,7 @@ function DashboardPage({ user }) {
             className={styles.searchInput}
           />
 
-          <span className={styles.accountLabel}>Account</span>
+          <Avatar />
         </div>
 
         <div className={styles.headerRow}>

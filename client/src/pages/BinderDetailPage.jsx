@@ -8,6 +8,7 @@ import AddItemModal from '../components/AddItemModal';
 import ItemDetailModal from '../components/ItemDetailModal';
 import CreateBinderModal from '../components/CreateBinderModal';
 import ConfirmDeleteModal from '../components/ConfirmDeleteModal';
+import Avatar from '../components/Avatar';
 import { getBinders, getItems, deleteBinder } from '../services/api';
 import styles from './BinderDetailPage.module.css';
 
@@ -203,7 +204,7 @@ function BinderDetailPage() {
               Delete Binder
             </Button>
 
-            <div className={styles.avatar}>JD</div>
+            <Avatar />
           </div>
         </header>
 

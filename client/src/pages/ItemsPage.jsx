@@ -6,6 +6,7 @@ import BinderCard from '../components/BinderCard';
 import ItemCard from '../components/ItemCard';
 import AddItemModal from '../components/AddItemModal';
 import ItemDetailModal from '../components/ItemDetailModal';
+import Avatar from '../components/Avatar';
 import { getBinders, getItems } from '../services/api';
 import styles from './ItemsPage.module.css';
 
@@ -189,7 +190,7 @@ function ItemsPage() {
               New Item
             </Button>
 
-            <div className={styles.avatar}>JD</div>
+            <Avatar />
           </div>
         </header>
 
