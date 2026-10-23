@@ -35,8 +35,18 @@ const configurePassport = () => {
             googleId: profile.id,
             name: profile.displayName,
             email: profile.emails?.[0]?.value,
-            avatar: profile.photos?.[0]?.value,
+            avatar: profile.photos?.[0]?.value || "",
+            photoUrl: profile.photos?.[0]?.value || "",
           });
+        } else {
+          const nextName = profile.displayName || user.name;
+          const nextPhoto = profile.photos?.[0]?.value || "";
+
+          user.name = nextName;
+          user.avatar = nextPhoto;
+          user.photoUrl = nextPhoto;
+
+          await user.save();
         }
 
         return done(null, user);

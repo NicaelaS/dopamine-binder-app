@@ -78,7 +78,10 @@ app.get("/profile", isAuthenticated, async (req, res) => {
     const user = await User.findById(req.user._id).select("-__v");
 
     res.json({
-      user,
+      user: {
+        ...user.toObject(),
+        photoUrl: user.photoUrl || user.avatar || "",
+      },
     });
   } catch (error) {
     res.status(500).json({ message: "Failed to load user profile" });
