@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Dashboard.module.css';
 import Sidebar from '../components/Sidebar';
@@ -6,6 +6,18 @@ import Button from '../components/Button';
 import StatCard from '../components/StatCard';
 import BinderCard from '../components/BinderCard';
 import { getBinders, getItems } from '../services/api';
+
+const binderColorMap = {
+  white: '#f7f7f7',
+  pink: '#f8b4d9',
+  purple: '#b39ddb',
+  yellow: '#ffe082',
+  blue: '#90caf9',
+  red: '#ef9a9a',
+  black: '#616161',
+  green: '#a5d6a7',
+  orange: '#ffcc80',
+};
 
 function DashboardPage({ user }) {
   const navigate = useNavigate();
@@ -54,7 +66,62 @@ function DashboardPage({ user }) {
     loadData();
   }, []);
 
+  const binderById = useMemo(() => {
+    const map = new Map();
+    binders.forEach((binder) => {
+      if (binder?._id) {
+        map.set(String(binder._id), binder);
+      }
+    });
+    return map;
+  }, [binders]);
+
+  const resolveBinderForItem = (item) => {
+    const binderRef = item?.binderId;
+
+    if (!binderRef) {
+      return null;
+    }
+
+    if (typeof binderRef === 'object') {
+      return {
+        _id: binderRef._id,
+        name: binderRef.name || 'No binder',
+        color: binderRef.color || 'orange',
+      };
+    }
+
+    return binderById.get(String(binderRef)) || null;
+  };
+
+  const latestItem = useMemo(() => {
+    if (!items.length) return null;
+
+    return items.reduce((latest, item) => {
+      const itemDate = item?.createdAt ? new Date(item.createdAt) : new Date(0);
+      const latestDate = latest?.createdAt ? new Date(latest.createdAt) : new Date(0);
+
+      return itemDate > latestDate ? item : latest;
+    }, items[0]);
+  }, [items]);
+
   const totalItemsValue = loading ? '...' : itemsRequestFailed ? '-' : items.length;
+
+  const latestBinder = latestItem ? resolveBinderForItem(latestItem) : null;
+  const latestBinderColorName = (latestBinder?.color || 'orange').toLowerCase();
+  const latestBinderColor = binderColorMap[latestBinderColorName] || binderColorMap.orange;
+  const latestItemType = latestItem?.type === 'TCG'
+    ? 'Trading card'
+    : latestItem?.type === 'BOOK'
+      ? 'Book'
+      : 'Item';
+  const latestItemDate = latestItem?.createdAt
+    ? new Date(latestItem.createdAt).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })
+    : '';
 
   const handleNewBinder = () => {
     console.log('Open new binder form');
@@ -120,14 +187,35 @@ function DashboardPage({ user }) {
 
           <div className={styles.lastUploadedCard}>
             <h3 className={styles.cardTitle}>Last uploaded</h3>
-            <div className={styles.emptyBox}>
-              <button className={styles.uploadButton} onClick={handleNewItem}>
-                Upload item
-              </button>
-              <p className={styles.emptyText}>
-                Upload your first item to see the latest activity here, including the item name, collection, and upload details.
-              </p>
-            </div>
+
+            {loading ? (
+              <div className={styles.emptyBox}>
+                <p className={styles.emptyText}>Loading...</p>
+              </div>
+            ) : !latestItem ? (
+              <div className={styles.emptyBox}>
+                <button className={styles.uploadButton} onClick={handleNewItem}>
+                  Upload item
+                </button>
+                <p className={styles.emptyText}>
+                  Upload your first item to see the latest activity here, including the item name, collection, and upload details.
+                </p>
+              </div>
+            ) : (
+              <div className={styles.latestItemBox}>
+                <div className={styles.latestItemHeader}>
+                  <span
+                    className={styles.latestBinderDot}
+                    style={{ backgroundColor: latestBinderColor }}
+                  />
+                  <span className={styles.latestBinderName}>{latestBinder?.name || 'No binder'}</span>
+                </div>
+
+                <p className={styles.latestItemTitle}>{latestItem.title}</p>
+                <p className={styles.latestItemType}>{latestItemType}</p>
+                <p className={styles.latestItemDate}>{latestItemDate}</p>
+              </div>
+            )}
           </div>
         </div>
 
