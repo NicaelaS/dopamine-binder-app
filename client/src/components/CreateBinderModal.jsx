@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import styles from './CreateBinderModal.module.css';
 import { binderImages, binderColors } from '../assets/binderImages';
-import { createBinder, editBinder } from '../services/api';
+import { createBinder, editBinder, getBinders } from '../services/api';
+
+const normalizeBinderName = (value = '') => value.trim().replace(/\s+/g, ' ').toLowerCase();
 
 // onClose: called to dismiss the modal without saving
 // onCreated: called after a successful save, with the new binder, so the
@@ -10,10 +12,27 @@ function CreateBinderModal({ onClose, onCreated, mode = 'create', initialBinder 
   const [name, setName] = useState('');
   const [selectedColor, setSelectedColor] = useState('orange'); // sensible default
   const [error, setError] = useState('');
+  const [duplicateError, setDuplicateError] = useState('');
+  const [existingBinders, setExistingBinders] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
+
+    let isMounted = true;
+
+    const loadExistingBinders = async () => {
+      try {
+        const binders = await getBinders();
+        if (isMounted) {
+          setExistingBinders(Array.isArray(binders) ? binders : []);
+        }
+      } catch {
+        if (isMounted) {
+          setExistingBinders([]);
+        }
+      }
+    };
 
     if (mode === 'edit' && initialBinder) {
       setName(initialBinder.name || '');
@@ -24,30 +43,73 @@ function CreateBinderModal({ onClose, onCreated, mode = 'create', initialBinder 
     }
 
     setError('');
+    setDuplicateError('');
+    loadExistingBinders();
+
+    return () => {
+      isMounted = false;
+    };
   }, [isOpen, mode, initialBinder]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const candidateName = normalizeBinderName(name);
+    if (!candidateName) {
+      setDuplicateError('');
+      return;
+    }
+
+    const hasDuplicate = existingBinders.some((binder) => {
+      if (mode === 'edit' && initialBinder?._id && String(binder._id) === String(initialBinder._id)) {
+        return false;
+      }
+
+      return normalizeBinderName(binder.name) === candidateName;
+    });
+
+    setDuplicateError(hasDuplicate ? 'A binder with this name already exists.' : '');
+  }, [isOpen, name, existingBinders, mode, initialBinder]);
 
   if (!isOpen) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // stop the browser's default full-page form submit
 
-    if (!name.trim()) {
+    const trimmedName = name.trim();
+    if (!trimmedName) {
       setError('Give your binder a name first.');
+      return;
+    }
+
+    const candidateName = normalizeBinderName(trimmedName);
+    const hasDuplicate = existingBinders.some((binder) => {
+      if (mode === 'edit' && initialBinder?._id && String(binder._id) === String(initialBinder._id)) {
+        return false;
+      }
+
+      return normalizeBinderName(binder.name) === candidateName;
+    });
+
+    if (hasDuplicate) {
+      setError('A binder with this name already exists.');
+      setDuplicateError('A binder with this name already exists.');
       return;
     }
 
     setIsSaving(true);
     setError('');
+    setDuplicateError('');
 
     try {
       if (mode === 'edit' && initialBinder?._id) {
         const updatedBinder = await editBinder(initialBinder._id, {
-          name: name.trim(),
+          name: trimmedName,
           color: selectedColor,
         });
         onCreated?.(updatedBinder);
       } else {
-        const newBinder = await createBinder({ name: name.trim(), color: selectedColor });
+        const newBinder = await createBinder({ name: trimmedName, color: selectedColor });
         onCreated?.(newBinder);
       }
 
@@ -90,13 +152,17 @@ function CreateBinderModal({ onClose, onCreated, mode = 'create', initialBinder 
             ))}
           </div>
 
-          {error && <p className={styles.error}>{error}</p>}
+          {(duplicateError || error) && <p className={styles.error}>{duplicateError || error}</p>}
 
           <div className={styles.actions}>
             <button type="button" onClick={onClose} className={styles.cancelButton}>
               Cancel
             </button>
-            <button type="submit" disabled={isSaving} className={styles.createButton}>
+            <button
+              type="submit"
+              disabled={isSaving || !!duplicateError}
+              className={styles.createButton}
+            >
               {isSaving ? (mode === 'edit' ? 'Saving...' : 'Creating...') : mode === 'edit' ? 'Save changes' : 'Create binder'}
             </button>
           </div>
