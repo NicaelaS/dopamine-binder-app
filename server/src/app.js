@@ -13,12 +13,15 @@ const binderRoutes = require("./routes/binderRoutes");
 const itemRoutes = require("./routes/itemRoutes");
 
 const app = express();
+const isProduction = process.env.NODE_ENV === "production";
+const frontendOrigin = process.env.CLIENT_URL || "http://localhost:5173";
+const frontendLoginUrl = process.env.CLIENT_LOGIN_URL || "http://localhost:5173/login";
 
 
 // ── App config ───────────────────────────────────────────
 app.use(cors({
-    origin: "http://localhost:5173", // Replace with your frontend URL
-    credentials: true, // Allow cookies to be sent
+    origin: frontendOrigin,
+    credentials: true,
 }));
 
 app.use(express.json());
@@ -26,10 +29,19 @@ app.use(express.urlencoded({ extended: true }));
 
 
 // ── Session ──────────────────────────────────────────────
+if (isProduction) {
+  app.set("trust proxy", 1);
+}
+
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+  },
 }));
 
 
@@ -66,10 +78,10 @@ app.get(
 app.get(
   "/auth/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "http://localhost:5173/login",
+    failureRedirect: frontendLoginUrl,
   }),
   (req, res) => {
-    res.redirect("http://localhost:5173");
+    res.redirect(frontendOrigin);
   }
 );
 
