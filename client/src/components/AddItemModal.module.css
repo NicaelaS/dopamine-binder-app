@@ -174,10 +174,16 @@
 }
 
 .cancelButton {
-  background: none;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #d0d0d0;
+  background: #fff;
+  color: #1d1d1d;        /* this is the line that makes the text visible */
+  font-weight: 600;
+  cursor: pointer;
 }
 
+.cancelButton:hover {
+  background: #f2f2f2;
+}
 .saveButton {
   background: #000;
   color: #fff;
