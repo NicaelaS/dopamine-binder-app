@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { fetchProfile } from '../services/api';
+import { BASE_URL, fetchProfile } from '../services/api';
 
 const AuthContext = createContext(null);
 
@@ -25,7 +25,7 @@ export function AuthProvider({ children }) {
   }, [refreshUser]);
 
   const loginWithGoogle = () => {
-    window.location.href = 'http://localhost:3000/auth/google';
+    window.location.href = `${BASE_URL}/auth/google`;
   };
 
   const value = useMemo(

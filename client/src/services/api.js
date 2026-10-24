@@ -1,8 +1,12 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
-const BASE_URL = API_BASE_URL;
+const LOCAL_DEV_API_URL = 'http://localhost:3000';
+const BASE_URL =
+  import.meta.env.VITE_API_URL ||
+  import.meta.env.VITE_API_BASE_URL ||
+  (import.meta.env.DEV ? LOCAL_DEV_API_URL : '');
+const API_BASE_URL = BASE_URL;
 
 export async function fetchProfile() {
-  const response = await fetch(`${API_BASE_URL}/profile`, {
+  const response = await fetch(`${BASE_URL}/profile`, {
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
