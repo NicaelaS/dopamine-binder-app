@@ -14,13 +14,12 @@ const itemRoutes = require("./routes/itemRoutes");
 
 const app = express();
 const isProduction = process.env.NODE_ENV === "production";
-const frontendOrigin = process.env.CLIENT_URL || "http://localhost:5173";
-const frontendLoginUrl = process.env.CLIENT_LOGIN_URL || "http://localhost:5173/login";
-
+const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
+const CLIENT_LOGIN_URL = process.env.CLIENT_LOGIN_URL || `${CLIENT_URL}/`;
 
 // ── App config ───────────────────────────────────────────
 app.use(cors({
-    origin: frontendOrigin,
+    origin: CLIENT_URL,
     credentials: true,
 }));
 
@@ -78,10 +77,10 @@ app.get(
 app.get(
   "/auth/google/callback",
   passport.authenticate("google", {
-    failureRedirect: frontendLoginUrl,
+    failureRedirect: CLIENT_LOGIN_URL,
   }),
   (req, res) => {
-    res.redirect(frontendOrigin);
+    res.redirect(`${CLIENT_URL}/dashboard`);
   }
 );
 

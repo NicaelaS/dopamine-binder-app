@@ -25,6 +25,7 @@ const configurePassport = () => {
       clientID,
       clientSecret,
       callbackURL: process.env.GOOGLE_CALLBACK_URL,
+      proxy: true,
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
