@@ -177,8 +177,6 @@
   border: 1px solid #d0d0d0;
   background: #fff;
   color: #1d1d1d;        /* this is the line that makes the text visible */
-  font-weight: 600;
-  cursor: pointer;
 }
 
 .cancelButton:hover {
