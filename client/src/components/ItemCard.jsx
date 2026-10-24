@@ -1,4 +1,35 @@
+import { useState } from 'react';
 import styles from './ItemCard.module.css';
+
+function CoverImage({ item }) {
+  const [failed, setFailed] = useState(false);
+
+  if (item?.type !== 'BOOK') {
+    return null;
+  }
+
+  const url = item?.bookDetails?.referenceCoverUrl;
+  const titleLetter = item?.title?.trim()?.charAt(0)?.toUpperCase() || '?';
+
+  if (!url || failed) {
+    return (
+      <div className={styles.coverPlaceholder} aria-hidden="true">
+        <span>{titleLetter}</span>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      className={styles.coverImage}
+      src={url}
+      alt={`Cover of ${item.title}`}
+      loading="lazy"
+      referrerPolicy="no-referrer"
+      onError={() => setFailed(true)}
+    />
+  );
+}
 
 function ItemCard({ item, binder, onClick }) {
   // Convert binder color names to chip hex colors for the item card UI.
@@ -26,6 +57,8 @@ function ItemCard({ item, binder, onClick }) {
 
   return (
     <div className={styles.card} onClick={onClick}>
+      <CoverImage item={item} />
+
       <h3 className={styles.title}>{item?.title || 'Untitled item'}</h3>
 
       <div className={styles.binderRow}>

@@ -12,6 +12,33 @@
   transform: translateY(-1px);
 }
 
+.coverImage {
+  display: block;
+  width: 100%;
+  height: 160px;
+  object-fit: contain;
+  background: #f2f2f2;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.coverPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 160px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, #5bc0eb, #ffbf00);
+}
+
+.coverPlaceholder span {
+  font-size: 48px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.55);
+}
+
 .title {
   margin: 0;
   font-family: 'Inter', 'Segoe UI', sans-serif;
