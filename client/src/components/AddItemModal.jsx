@@ -10,6 +10,7 @@ const initialForm = {
   quantity: 1,
   notes: '',
   tags: '',
+  authorsInput: '',
   binderId: '',
   cardDetails: {
     game: 'pokemon',
@@ -68,6 +69,9 @@ function AddItemModal({
         quantity: Number(initialItem.quantity || 1),
         notes: initialItem.notes || '',
         tags: Array.isArray(initialItem.tags) ? initialItem.tags.join(', ') : '',
+        authorsInput: Array.isArray(initialItem.bookDetails?.authors)
+          ? initialItem.bookDetails.authors.join(', ')
+          : '',
         binderId: resolvedBinderId,
         cardDetails: {
           ...initialForm.cardDetails,
@@ -142,14 +146,17 @@ function AddItemModal({
 
     if (payload.type === 'TCG') {
       delete payload.bookDetails;
+      delete payload.authorsInput;
     } else {
       delete payload.cardDetails;
       payload.bookDetails = {
         ...payload.bookDetails,
-        authors: Array.isArray(payload.bookDetails?.authors)
-          ? payload.bookDetails.authors
-          : [],
+        authors: String(form.authorsInput || '')
+          .split(',')
+          .map((author) => author.trim())
+          .filter(Boolean),
       };
+      delete payload.authorsInput;
     }
 
     return payload;
@@ -365,15 +372,10 @@ function AddItemModal({
                   <div className={styles.value}>
                     <input
                       className={styles.input}
-                      value={form.bookDetails.authors.join(', ')}
-                      onChange={(event) =>
-                        setDetailValue(
-                          'bookDetails',
-                          'authors',
-                          event.target.value.split(',').map((v) => v.trim()).filter(Boolean)
-                        )
-                      }
+                      value={form.authorsInput}
+                      onChange={(event) => setValue('authorsInput', event.target.value)}
                     />
+                    <small className={styles.helperText}>Separate multiple authors with commas.</small>
                   </div>
                 </div>
 
