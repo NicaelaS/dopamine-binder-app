@@ -1,7 +1,40 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { deleteItem } from '../services/api';
 import AddItemModal from './AddItemModal';
 import styles from './ItemDetailModal.module.css';
+
+function CoverImage({ item }) {
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    setFailed(false);
+  }, [item?.bookDetails?.referenceCoverUrl]);
+
+  if (item?.type !== 'BOOK') {
+    return null;
+  }
+
+  const url = item?.bookDetails?.referenceCoverUrl;
+  const titleLetter = item?.title?.trim()?.charAt(0)?.toUpperCase() || '?';
+
+  if (!url || failed) {
+    return (
+      <div className={styles.coverPlaceholder} aria-hidden="true">
+        <span>{titleLetter}</span>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      className={styles.coverImage}
+      src={url}
+      alt={`Cover of ${item.title}`}
+      referrerPolicy="no-referrer"
+      onError={() => setFailed(true)}
+    />
+  );
+}
 
 function ItemDetailModal({ isOpen, item, binderName, binders, onClose, onSaved, onDeleted }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -34,6 +67,7 @@ function ItemDetailModal({ isOpen, item, binderName, binders, onClose, onSaved, 
     <>
       <div className={styles.overlay} onClick={onClose}>
         <div className={styles.modal} onClick={(event) => event.stopPropagation()}>
+          <CoverImage item={item} />
           <h2 className={styles.title}>{item.title}</h2>
           <p className={styles.subtitle}>{subtitle}</p>
 

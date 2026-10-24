@@ -17,6 +17,33 @@
   padding: 24px;
 }
 
+.coverImage {
+  display: block;
+  margin: 0 auto 16px;
+  max-width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  border-radius: 6px;
+  background: #f2f2f2;
+}
+
+.coverPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 200px;
+  margin: 0 auto 16px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #5bc0eb, #ffbf00);
+}
+
+.coverPlaceholder span {
+  font-size: 48px;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.55);
+}
+
 .title {
   margin: 0;
   font-size: 26px;
