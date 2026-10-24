@@ -101,7 +101,7 @@ async function editBinder(req, res) {
     const binder = await Binder.findOneAndUpdate(
       { _id: binderId, userId: req.user._id },
       { name: trimmedName, color },
-      { new: true }
+      { returnDocument: 'after' }
     );
 
     if (!binder) {

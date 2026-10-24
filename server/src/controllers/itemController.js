@@ -1,4 +1,5 @@
 const Item = require("../models/item");
+const { fetchBookCover } = require("../services/bookLookup");
 
 async function getItems(req, res) {
   try {
@@ -77,6 +78,17 @@ async function createItem(req, res) {
   try {
     const payload = normalizeItemPayload(req.body, req.user?._id);
 
+    // Auto-fill a book cover when the item is a BOOK and one is missing.
+    if (payload.type === "BOOK") {
+      payload.bookDetails = payload.bookDetails || {};
+      if (!payload.bookDetails.referenceCoverUrl) {
+        payload.bookDetails.referenceCoverUrl = await fetchBookCover(
+          payload.title,
+          payload.bookDetails?.authors
+        );
+      }
+    }
+
     const item = new Item(payload);
     const savedItem = await item.save();
 
@@ -108,7 +120,7 @@ async function updateItem(req, res) {
     const updatedItem = await Item.findOneAndUpdate(
       { _id: id, userId: req.user?._id },
       payload,
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
 
     if (!updatedItem) {
