@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { binderImages } from '../assets/binderImages';
 import { createItem, updateItem } from '../services/api';
 import CreateBinderModal from './CreateBinderModal';
@@ -48,6 +48,7 @@ function AddItemModal({
   onSaved,
   onBinderCreated,
 }) {
+  const formRef = useRef(null);
   const [form, setForm] = useState(initialForm);
   const [error, setError] = useState('');
   const [isSaving, setIsSaving] = useState(false);
@@ -213,7 +214,38 @@ function AddItemModal({
         <div className={styles.modal} onClick={(event) => event.stopPropagation()}>
           <h2 className={styles.title}>{mode === 'edit' ? 'Edit item' : 'New item'}</h2>
 
-          <form onSubmit={handleSubmit}>
+          <form
+            ref={formRef}
+            onSubmit={handleSubmit}
+            onKeyDown={(event) => {
+              if (
+                event.key !== 'Enter' ||
+                event.nativeEvent.isComposing ||
+                event.target.tagName !== 'INPUT'
+              ) {
+                return;
+              }
+
+              const focusableSelector =
+                'input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled])';
+
+              const focusableFields = Array.from(
+                formRef.current?.querySelectorAll(focusableSelector) || []
+              );
+
+              const currentIndex = focusableFields.indexOf(event.target);
+              if (currentIndex === -1) return;
+
+              const nextField = focusableFields
+                .slice(currentIndex + 1)
+                .find((field) => !(field.type === 'radio'));
+
+              if (nextField) {
+                event.preventDefault();
+                nextField.focus();
+              }
+            }}
+          >
             <div className={styles.row}>
               <label className={styles.label}>Type</label>
               <div className={styles.value}>
