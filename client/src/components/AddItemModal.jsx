@@ -422,16 +422,6 @@ function AddItemModal({
                   </div>
                 </div>
 
-                <div className={styles.row}>
-                  <label className={styles.label}>Publisher</label>
-                  <div className={styles.value}>
-                    <input
-                      className={styles.input}
-                      value={form.bookDetails.publisher}
-                      onChange={(event) => setDetailValue('bookDetails', 'publisher', event.target.value)}
-                    />
-                  </div>
-                </div>
 
                 <div className={styles.row}>
                   <label className={styles.label}>Condition</label>
@@ -445,7 +435,6 @@ function AddItemModal({
                       <option value="Like New">Like New</option>
                       <option value="Very Good">Very Good</option>
                       <option value="Good">Good</option>
-                      <option value="Acceptable">Acceptable</option>
                       <option value="Poor">Poor</option>
                     </select>
                   </div>
