@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Dashboard.module.css';
 import Sidebar from '../components/Sidebar';
@@ -27,7 +27,10 @@ function DashboardPage({ user }) {
   const [binders, setBinders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [itemsRequestFailed, setItemsRequestFailed] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCreateBinderOpen, setIsCreateBinderOpen] = useState(false);
+  const searchRef = useRef(null);
   const favoriteCount = 0;
   const pinnedCount = 0;
 
@@ -69,6 +72,28 @@ function DashboardPage({ user }) {
     loadData();
   }, []);
 
+  useEffect(() => {
+    const handlePointerDown = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setIsSearchOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setIsSearchOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   const binderById = useMemo(() => {
     const map = new Map();
     binders.forEach((binder) => {
@@ -96,6 +121,41 @@ function DashboardPage({ user }) {
 
     return binderById.get(String(binderRef)) || null;
   };
+
+  const searchResults = useMemo(() => {
+    const trimmedTerm = searchTerm.trim().toLowerCase();
+
+    if (!trimmedTerm) {
+      return { binderResults: [], itemResults: [] };
+    }
+
+    const binderResults = binders
+      .filter((binder) => String(binder?.name || '').toLowerCase().includes(trimmedTerm))
+      .slice(0, 4);
+
+    const itemResults = items
+      .map((item) => {
+        const binder = resolveBinderForItem(item);
+        const binderName = binder?.name || 'No binder';
+        const tagText = Array.isArray(item?.tags) ? item.tags.join(' ') : '';
+        const haystack = [
+          item?.title || '',
+          tagText,
+          binderName,
+        ].join(' ').toLowerCase();
+
+        return {
+          item,
+          binderName,
+          binderId: binder?._id || null,
+          haystack,
+        };
+      })
+      .filter(({ haystack }) => haystack.includes(trimmedTerm))
+      .slice(0, 6);
+
+    return { binderResults, itemResults };
+  }, [binders, items, searchTerm]);
 
   const latestItem = useMemo(() => {
     if (!items.length) return null;
@@ -139,6 +199,12 @@ function DashboardPage({ user }) {
     navigate('/items', { state: { openAddItem: true } });
   };
 
+  const handleSearchSelect = (targetPath) => {
+    setSearchTerm('');
+    setIsSearchOpen(false);
+    navigate(targetPath);
+  };
+
   const handlePinnedEmptyStateClick = () => {
     navigate('/binders');
   };
@@ -158,11 +224,83 @@ function DashboardPage({ user }) {
         <div className={styles.topBar}>
           <h1 className={styles.pageTitle}>Dashboard</h1>
 
-          <input
-            type="text"
-            placeholder="Search collections, items, or tags..."
-            className={styles.searchInput}
-          />
+          <div className={styles.searchWrap} ref={searchRef}>
+            <input
+              type="text"
+              value={searchTerm}
+              onFocus={() => setIsSearchOpen(Boolean(searchTerm.trim()))}
+              onChange={(event) => {
+                const nextValue = event.target.value;
+                setSearchTerm(nextValue);
+                setIsSearchOpen(Boolean(nextValue.trim()));
+              }}
+              placeholder="Search collections, items, or tags..."
+              className={styles.searchInput}
+            />
+
+            {isSearchOpen && searchTerm.trim() && (
+              <div className={styles.searchDropdown}>
+                {loading || itemsRequestFailed ? (
+                  <div className={styles.searchEmpty}>No results for "{searchTerm.trim()}"</div>
+                ) : searchResults.binderResults.length === 0 && searchResults.itemResults.length === 0 ? (
+                  <div className={styles.searchEmpty}>No results for "{searchTerm.trim()}"</div>
+                ) : (
+                  <>
+                    {searchResults.binderResults.length > 0 && (
+                      <div className={styles.searchGroup}>
+                        <div className={styles.searchGroupTitle}>Binders</div>
+                        {searchResults.binderResults.map((binder) => (
+                          <div
+                            key={binder._id}
+                            className={styles.searchRow}
+                            onClick={() => handleSearchSelect(`/binders/${binder._id}`)}
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(event) => {
+                              if (event.key === 'Enter' || event.key === ' ') {
+                                event.preventDefault();
+                                handleSearchSelect(`/binders/${binder._id}`);
+                              }
+                            }}
+                          >
+                            {binder.name}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {searchResults.itemResults.length > 0 && (
+                      <div className={styles.searchGroup}>
+                        <div className={styles.searchGroupTitle}>Items</div>
+                        {searchResults.itemResults.map(({ item, binderName, binderId }) => {
+                          const itemType = item?.type === 'TCG' ? 'Trading card' : 'Book';
+
+                          return (
+                            <div
+                              key={item?._id || item?.title || binderName}
+                              className={styles.searchRow}
+                              onClick={() => handleSearchSelect(binderId ? `/binders/${binderId}` : '/items')}
+                              role="button"
+                              tabIndex={0}
+                              onKeyDown={(event) => {
+                                if (event.key === 'Enter' || event.key === ' ') {
+                                  event.preventDefault();
+                                  handleSearchSelect(binderId ? `/binders/${binderId}` : '/items');
+                                }
+                              }}
+                            >
+                              <div>{item?.title || 'Untitled item'}</div>
+                              <div className={styles.searchMeta}>{binderName} · {itemType}</div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+          </div>
 
           <Avatar />
         </div>
